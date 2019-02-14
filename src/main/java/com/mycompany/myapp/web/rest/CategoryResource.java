@@ -5,6 +5,12 @@ import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.util.HeaderUtil;
 import com.mycompany.myapp.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.mycompany.myapp.repository.CategoryQuotaRepository;
+import com.mycompany.myapp.security.SecurityUtils;
+import com.mycompany.myapp.domain.CategoryQuota;
+import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,6 +34,10 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class CategoryResource {
 
+    @Autowired
+    private CategoryQuotaRepository CategoryQuotaRepository;
+    @Autowired
+    private UserRepository userRepository;
     private final Logger log = LoggerFactory.getLogger(CategoryResource.class);
 
     private static final String ENTITY_NAME = "category";
@@ -48,10 +58,20 @@ public class CategoryResource {
     @PostMapping("/categories")
     public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
         log.debug("REST request to save Category : {}", category);
+        Optional<String> userLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> user = userRepository.findOneByLogin(userLogin.get());
+        Optional<CategoryQuota> q1 = CategoryQuotaRepository.findOneByUser(user.get());
+        if (q1.isPresent() && (q1.get().getQuota()==0)) {
+        	throw new BadRequestAlertException("You no longer have the necessary quota to create this entity", null, "errorquota");
+        }
         if (category.getId() != null) {
             throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Category result = categoryService.save(category);
+        if(q1.isPresent()) {
+        	q1.get().setQuota(q1.get().getQuota()-1);
+        	CategoryQuotaRepository.save(q1.get());
+        }
         return ResponseEntity.created(new URI("/api/categories/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -121,6 +141,13 @@ public class CategoryResource {
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         log.debug("REST request to delete Category : {}", id);
         categoryService.delete(id);
+        Optional<String> userLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> user = userRepository.findOneByLogin(userLogin.get());
+        Optional<CategoryQuota> q1 = CategoryQuotaRepository.findOneByUser(user.get());
+        if(q1.isPresent()) {
+        	q1.get().setQuota(q1.get().getQuota()+1);
+        	CategoryQuotaRepository.save(q1.get());
+        }
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

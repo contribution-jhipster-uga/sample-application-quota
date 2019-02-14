@@ -5,6 +5,12 @@ import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import com.mycompany.myapp.web.rest.util.HeaderUtil;
 import com.mycompany.myapp.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.mycompany.myapp.repository.ProductQuotaRepository;
+import com.mycompany.myapp.security.SecurityUtils;
+import com.mycompany.myapp.domain.ProductQuota;
+import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,6 +34,10 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class ProductResource {
 
+    @Autowired
+    private ProductQuotaRepository ProductQuotaRepository;
+    @Autowired
+    private UserRepository userRepository;
     private final Logger log = LoggerFactory.getLogger(ProductResource.class);
 
     private static final String ENTITY_NAME = "product";
@@ -48,10 +58,20 @@ public class ProductResource {
     @PostMapping("/products")
     public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) throws URISyntaxException {
         log.debug("REST request to save Product : {}", product);
+        Optional<String> userLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> user = userRepository.findOneByLogin(userLogin.get());
+        Optional<ProductQuota> q1 = ProductQuotaRepository.findOneByUser(user.get());
+        if (q1.isPresent() && (q1.get().getQuota()==0)) {
+        	throw new BadRequestAlertException("You no longer have the necessary quota to create this entity", null, "errorquota");
+        }
         if (product.getId() != null) {
             throw new BadRequestAlertException("A new product cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Product result = productRepository.save(product);
+        if(q1.isPresent()) {
+        	q1.get().setQuota(q1.get().getQuota()-1);
+        	ProductQuotaRepository.save(q1.get());
+        }
         return ResponseEntity.created(new URI("/api/products/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -115,6 +135,13 @@ public class ProductResource {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         log.debug("REST request to delete Product : {}", id);
         productRepository.deleteById(id);
+        Optional<String> userLogin = SecurityUtils.getCurrentUserLogin();
+        Optional<User> user = userRepository.findOneByLogin(userLogin.get());
+        Optional<ProductQuota> q1 = ProductQuotaRepository.findOneByUser(user.get());
+        if(q1.isPresent()) {
+        	q1.get().setQuota(q1.get().getQuota()+1);
+        	ProductQuotaRepository.save(q1.get());
+        }
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

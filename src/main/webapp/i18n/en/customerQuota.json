@@ -1,0 +1,22 @@
+{
+    "jhipsterApp": {
+        "customerQuota": {
+            "home": {
+                "title": "Customer Quotas",
+                "createLabel": "Create a new Customer Quota",
+                "createOrEditLabel": "Create or edit a Customer Quota"
+            },
+            "created": "A new Customer Quota is created with identifier {{ param }}",
+            "updated": "A Customer Quota is updated with identifier {{ param }}",
+            "deleted": "A Customer Quota is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Customer Quota {{ id }}?"
+            },
+            "detail": {
+                "title": "Customer Quota"
+            },
+            "quota": "Quota",
+            "user": "User"
+        }
+    }
+}

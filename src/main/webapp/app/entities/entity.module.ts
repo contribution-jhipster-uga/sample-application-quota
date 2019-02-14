@@ -19,6 +19,22 @@ import { RouterModule } from '@angular/router';
             {
                 path: 'address',
                 loadChildren: './address/address.module#JhipsterAddressModule'
+            },
+            {
+                path: 'category-quota',
+                loadChildren: './category-quota/category-quota.module#JhipsterCategoryQuotaModule'
+            },
+            {
+                path: 'product-quota',
+                loadChildren: './product-quota/product-quota.module#JhipsterProductQuotaModule'
+            },
+            {
+                path: 'customer-quota',
+                loadChildren: './customer-quota/customer-quota.module#JhipsterCustomerQuotaModule'
+            },
+            {
+                path: 'address-quota',
+                loadChildren: './address-quota/address-quota.module#JhipsterAddressQuotaModule'
             }
             /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
         ])
