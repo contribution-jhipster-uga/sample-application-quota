@@ -1,4 +1,7 @@
-# jhipster
+# Sample Application Quota
+
+This is a sample application to try out the generator-jhipster-quota module and see how it works.
+To try the quotas, you should connect as a user to be able to access the menu for entities. From there, you can create a ProductQuota for your user and then try to create Products or delete them to see what happens.
 
 This application was generated using JHipster 5.8.1, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v5.8.1](https://www.jhipster.tech/documentation-archive/v5.8.1).
 
