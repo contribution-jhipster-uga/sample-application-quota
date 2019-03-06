@@ -7,6 +7,14 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Entities",
+                "category": "Category",
+                "product": "Product",
+                "customer": "Customer",
+                "address": "Address",
+                "categoryQuota": "Category Quota",
+                "productQuota": "Product Quota",
+                "customerQuota": "Customer Quota",
+                "addressQuota": "Address Quota",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
@@ -130,6 +138,7 @@
         "userexists": "Login name already used!",
         "emailexists": "Email is already in use!",
         "idexists": "A new {{ entityName }} cannot already have an ID",
+        "errorquota": "You no longer have the necessary quota to create this entity",
         "idnull": "Invalid ID"
     },
     "footer": "This is your footer"

@@ -1,0 +1,22 @@
+{
+    "jhipsterApp": {
+        "addressQuota": {
+            "home": {
+                "title": "Address Quotas",
+                "createLabel": "Create a new Address Quota",
+                "createOrEditLabel": "Create or edit a Address Quota"
+            },
+            "created": "A new Address Quota is created with identifier {{ param }}",
+            "updated": "A Address Quota is updated with identifier {{ param }}",
+            "deleted": "A Address Quota is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Address Quota {{ id }}?"
+            },
+            "detail": {
+                "title": "Address Quota"
+            },
+            "quota": "Quota",
+            "user": "User"
+        }
+    }
+}

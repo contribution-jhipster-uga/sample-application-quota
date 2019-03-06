@@ -1,0 +1,28 @@
+{
+    "name": "CustomerQuota",
+    "fields": [
+        {
+            "fieldName": "quota",
+            "fieldType": "Integer"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "customerQuota"
+        }
+    ],
+    "changelogDate": "20190306133052",
+    "entityTableName": "customer_quota",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}
